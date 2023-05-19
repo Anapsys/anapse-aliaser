@@ -79,14 +79,15 @@ local function putPixel(color,x,y)
 end
 
  -- 
-local function clreq(a, b)
+local function colorIsEqual(a, b)
 	-- TODO: wtf does this do
     --if a==false then return false end
     --if b==false then return false end
+	local appClr = app.pixelColor
 
-    return app.pixelColor.rgbaR(a) == app.pixelColor.rgbaR(b) and
-        app.pixelColor.rgbaG(a) == app.pixelColor.rgbaG(b) and
-        app.pixelColor.rgbaB(a) == app.pixelColor.rgbaB(b) 
+    return 	appClr.rgbaR(a) == appClr.rgbaR(b) and
+			appClr.rgbaG(a) == appClr.rgbaG(b) and
+			appClr.rgbaB(a) == appClr.rgbaB(b) 
 end
 
 -- grid operation definitions
@@ -101,11 +102,11 @@ local function getGrid(cx,cy)
             local clr = getPixel(cx + x-2,cy + y-2);
             local cell = 0;
 
-            if (clreq(clr,targetColor)) then
+            if (colorIsEqual(clr,targetColor)) then
                 cell = 1;
-            elseif(not anycolor and clreq(clr,outerColor)) then
+            elseif(not anycolor and colorIsEqual(clr,outerColor)) then
                 cell = 5;
-            elseif(clreq(clr,aliasColor)) then
+            elseif(colorIsEqual(clr,aliasColor)) then
                 cell = 4;
             end      
 
@@ -220,11 +221,12 @@ local function aa()
     for y=1+canvas.y, canvas.y+canvas.height-2 do
         for x=1+canvas.x, canvas.x+canvas.width-2 do
 
-            if (clreq(getPixel(x,y),targetColor) and 
-            not(clreq(getPixel(x-1,y),targetColor) and 
-            clreq(getPixel(x+1,y),targetColor) and
-            clreq(getPixel(x,y-1),targetColor) and
-            clreq(getPixel(x,y+1),targetColor))) then
+            if ( colorIsEqual(getPixel(x,y),targetColor) and 
+            not(colorIsEqual(getPixel(x-1,y),targetColor) and 
+				colorIsEqual(getPixel(x+1,y),targetColor) and
+				colorIsEqual(getPixel(x,y-1),targetColor) and
+				colorIsEqual(getPixel(x,y+1),targetColor)) ) 
+				then
                 imageGrid = getGrid(x,y);
                 testGrid = {
                     0,0,0,0,0,
@@ -271,7 +273,7 @@ local function aa()
         aliasPlacesY={}
         for y=1+canvas.y, canvas.y+canvas.height-2 do
             for x=1+canvas.x, canvas.x+canvas.width-2 do
-                if not clreq(getPixel(x,y), targetColor) then
+                if not colorIsEqual(getPixel(x,y), targetColor) then
                     imageGrid = getGrid(x,y);
                     testGrid = {
                         0,0,0,0,0,

@@ -15,26 +15,31 @@ function init(plugin)
 
   -- we can use "plugin.preferences" as a table with fields for
   -- our plugin (these fields are saved between sessions)
+  --[[
   if plugin.preferences.count == nil then
     plugin.preferences.count = 0
   end
+  ]]--
 
   --
   -- commands, which will be added to the menu
   plugin:newCommand{
-    id="MyFirstCommand",
+    id="AAAlias",
     title="My First Command",
-    group="cel_popup_properties",
+    group="auto_alias_group",
     onclick=function()
-      -- do the stuff
+      aa();
     end
   }
   --
   -- menu group; add to edit->fx!
   plugin:newMenuGroup{
-    id="new_group_id",
-    title="Menu Item Label",
-    group="parent_group_id"
+    id="auto_alias_group",
+    title="Antialias",
+    group="edit_menu"
+  }
+  plugin:newMenuSeparator{
+    group="aaalias_group"
   }
 end
 

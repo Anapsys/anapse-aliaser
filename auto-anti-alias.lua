@@ -6,30 +6,9 @@ Useful for quickly applying this style to large areas in larger drawings.
 Adapted/refactored from Rik Nicol's work https://github.com/rikfuzz/aseprite-scripts/blob/master/antialias.lua
 ]]--
 
--- constants
-function protect(tbl)
-    return setmetatable({}, {
-        __index = tbl,
-        __newindex = function(t, key, value)
-            error("attempting to change constant " ..
-                   tostring(key) .. " to " .. tostring(value), 2)
-        end
-    })
-end
-
-GR = {
-    empty = 0,
-	a = 1,
-    b = 2,
-	c = 3,
-	d = 4,
-	e = 5,
-}
-GR = protect(GR)
-
 -- config
-local anycolor = true;
-local extraSmooth = false;
+local anycolor = true; -- ?
+local extraSmooth = false; -- ?
 
 -- definitions
 local canvas; 
@@ -68,21 +47,15 @@ local aliasColor = app.bgColor
 aliasColor = colorToRGBA(aliasColor)
 
 -- base operation definitions
--- 
 local function getPixel(x,y)
     return imageClone:getPixel(x, y)
 end
-
--- 
 local function putPixel(color,x,y)
     return imageClone:putPixel(x, y, color)
 end
 
  -- 
 local function colorIsEqual(a, b)
-	-- TODO: wtf does this do
-    --if a==false then return false end
-    --if b==false then return false end
 	local appClr = app.pixelColor
 
     return 	appClr.rgbaR(a) == appClr.rgbaR(b) and
@@ -133,7 +106,6 @@ local function rotateGrid(testGrid)
     return newGrid;
 end
 
--- rotates input grid by 90 degrees
 local function flipGrid(testGrid)
     local newGrid = {	0,0,0,0,0,
 						0,0,0,0,0,
@@ -208,10 +180,10 @@ local function pushAA(x,y)
     table.insert(aliasPlacesX,x)
     table.insert(aliasPlacesY,y)
 end
-local function pushB(x,y)
+--[[ local function pushB(x,y)
     table.insert(bodyPlacesX,x)
     table.insert(bodyPlacesY,y)
-end
+end ]]--
 
 -- main
 -- test grids vals 1 and 2 are not WEIGHTS, they are testing for col1 vs col2
@@ -266,10 +238,12 @@ local function aa()
         end
     end
 
-    for i=0,#aliasPlacesX do
+	-- place all resulting positions
+    for i=1,#aliasPlacesX do
         putPixel(aliasColor, aliasPlacesX[i], aliasPlacesY[i])
     end
 
+	--[[ legacy feature "extraSmooth"
     if(extraSmooth)then
         aliasPlacesX={}
         aliasPlacesY={}
@@ -294,6 +268,7 @@ local function aa()
             putPixel(aliasColor,aliasPlacesX[i],aliasPlacesY[i])
         end
     end
+	]]--
 end
 
 -- entry point
